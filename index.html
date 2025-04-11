@@ -23,9 +23,24 @@
                 <button id="reset">Reset</button>
             </div>
         </div>
+        <div class="settings">
+            <h2>Customize Durations</h2>
+            <label for="workDuration">Work (min):</label>
+            <input type="number" id="workDuration" min="1" max="60" value="25">
+            <label for="breakDuration">Break (min):</label>
+            <input type="number" id="breakDuration" min="1" max="60" value="5">
+            <button id="saveSettings">Save Settings</button>
+        </div>
+        <div class="task-list">
+            <h2>Task List</h2>
+            <label for="newTaskInput">New task name:</label>
+            <input type="text" id="newTaskInput" placeholder="Enter a task">
+            <button id="addTaskBtn">Add Task</button>
+            <ul id="tasksContainer"></ul>
+        </div>
     </main>
     <footer>
-        <p>&copy; 2023 Pomodoro Timer. All rights reserved.</p>
+        <p>&copy; 2025 Pomodoro Timer. All rights reserved.</p>
         <p>Created by Xiyu Liang</p>
     </footer>
     <script src="js/script.js"></script>
