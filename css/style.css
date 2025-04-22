@@ -29,6 +29,22 @@ main {
     align-items: center;
 }
 
+/* skip to main */
+.skip {
+    position: absolute;
+    top: -100px;
+    left: 10px;
+    padding: 0.5rem;
+    margin: 0.5rem;
+    background-color: #fad0c4;
+    color: black;
+    font-weight: bold;
+}
+
+.skip:focus {
+    top: 20px;
+}
+
 /* Container */
 .container {
     /* width: 400px; */
