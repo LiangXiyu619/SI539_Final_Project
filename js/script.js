@@ -28,8 +28,7 @@ function startTimer() {
             timeLeft--;
             updateDisplay();
         } else {
-            clearInterval(timer);
-            isRunning = false;
+            pauseTimer();
             alarmSound.play().catch(error => console.error("Audio play failed:", error));
             alert(isWorkSession ? "Time's up! Take a break." : "Back to work!");
             switchSession();
@@ -43,16 +42,19 @@ function pauseTimer() {
 }
 
 function resetTimer() {
-    clearInterval(timer);
-    isRunning = false;
-    timeLeft = workDuration * 60;
-    isWorkSession = true;
+    pauseTimer();
+    if (isWorkSession) {
+        timeLeft = workDuration * 60;
+    } else {
+        timeLeft = breakDuration * 60;
+    }
     updateDisplay();
 }
 
 function switchSession() {
     isWorkSession = !isWorkSession;
     timeLeft = isWorkSession ? workDuration * 60 : breakDuration * 60;
+    pauseTimer();
     updateDisplay();
 }
 
@@ -75,6 +77,19 @@ function loadState() {
         timeLeft = parseInt(localStorage.getItem("timeLeft"));
         isRunning = localStorage.getItem("isRunning") === "true";
         isWorkSession = localStorage.getItem("isWorkSession") === "true";
+        const workMode = document.getElementById("workMode");
+        const breakMode = document.getElementById("breakMode");
+        if (isWorkSession) {
+            workMode.classList.add("active");
+            if (breakMode.classList.contains("active")) {
+                breakMode.classList.remove("active");
+            }
+        } else {
+            if (workMode.classList.contains("active")) {
+                workMode.classList.remove("active");
+            }
+            breakMode.classList.add("active");
+        }
         updateDisplay();
     } else {
         timeLeft = workDuration * 60;
@@ -92,11 +107,18 @@ function renderTasks() {
     tasks.forEach((task, index) => {
         const li = document.createElement("li");
         li.className = task.completed ? "completed" : "";
+        const iconSrc = task.completed ? "src/undo.png" : "src/check-mark.png";
+        const iconAlt = task.completed ? "undo complete" : "complete";
+        const iconLabel = task.completed ? "undo complete task" : "complete task";
         li.innerHTML = `
             <span>${task.name}</span>
             <div class="task-actions">
-                <button onclick="toggleComplete(${index})"><img src='src/check-mark.png' alt='complete'></button>
-                <button onclick="deleteTask(${index})"><img src='src/delete.png' alt='delete'></button>
+                <button onclick="toggleComplete(${index})" aria-label="${iconLabel}">
+                    <img src='${iconSrc}' alt='${iconAlt}'>
+                </button>
+                <button onclick="deleteTask(${index})" aria-label="delete task">
+                    <img src='src/delete.png' alt='delete'>
+                </button>
             </div>
         `;
         container.appendChild(li);
@@ -154,6 +176,43 @@ document.getElementById("addTaskBtn").addEventListener("click", function() {
         console.log(tasks);
         saveTasks();
         renderTasks();
+    }
+});
+
+document.getElementById("workMode").addEventListener("click", function() {
+    if (! isWorkSession) {
+        this.classList.toggle("active");
+        const breakMode = document.getElementById("breakMode");
+        if (breakMode.classList.contains("active")) {
+            breakMode.classList.remove("active");
+        }
+        pauseTimer();
+        switchSession();
+    }
+});
+
+document.getElementById("breakMode").addEventListener("click", function() {
+    if (isWorkSession) {
+        this.classList.toggle("active");
+        const workMode = document.getElementById("workMode");
+        if (workMode.classList.contains("active")) {
+            workMode.classList.remove("active");
+        }
+        pauseTimer();
+        switchSession();
+    }
+});
+
+document.addEventListener("keydown", function(event) {
+    if (event.code === "Space") {
+        event.preventDefault();
+        if (isRunning) {
+            pauseTimer();
+        } else {
+            startTimer();
+        }
+    } else if (event.code === "KeyR") {
+        resetTimer();
     }
 });
 

@@ -1,9 +1,17 @@
+:root {
+    --dark-color: #ff9a9e;
+    --light-color: #fad0c4;
+    --text-on-dark: white;
+    --text-on-light: black;
+}
+
 /* General styles */
 body {
     font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #ff9a9e, #fad0c4);
     text-align: center;
-    color: #333;
+    color: black;
+    min-height: 100vh;
 }
 
 header {
@@ -68,7 +76,7 @@ button {
     transition: transform 0.2s ease-in-out;
 }
 
-button:hover {
+button:hover, button:focus {
     opacity: 0.8;
 }
 
@@ -89,6 +97,26 @@ button:active {
 #reset {
     background-color: darkred;
     color: white;
+}
+
+/* Mode */
+.mode {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.mode button {
+    background-color: white;
+}
+
+.mode button.active {
+    background-color: #ff6b6b;
+    color: white;
+}
+
+.mode button:hover, .mode button:focus {
+    background-color: #fad0c4;
+    color: black;
 }
 
 /* Settings Section */
@@ -190,20 +218,51 @@ footer {
     margin: 20px 0;
 }
 
-/* Responsive design
 @media (min-width: 600px) {
+    main {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        justify-content: center;
+        align-items: center;
+    }
+
     .container {
+        justify-self: center;
+        align-self: center;
+    }
+
+    .settings {
         max-width: 400px;
-        padding: 20px;
-        margin: 100px auto;
+        justify-self: center;
+        align-self: center;
     }
 
-    .timer {
-        font-size: 3rem;
+    .task-list {
+        grid-column: 1 / -1;
+        max-width: 600px;
+        justify-self: center;
+        align-self: center;
+    }
+}
+
+@media (min-width: 1000px) {
+    .container {
+        grid-column: 1 / -1;
     }
 
-    button {
-        font-size: 1.2rem;
-        padding: 10px 20px;
+    .task-list {
+        grid-column: 2 / span 1;
     }
-} */
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+    }
+
+    button:active, button:focus, button:hover {
+        transform: none !important;
+    }
+}
